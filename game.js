@@ -665,14 +665,25 @@ function loadQuestion() {
   document.getElementById('questionPrompt').textContent = q.prompt;
 
   // answer options
-  var og     = document.getElementById('optionsGrid');
+  // shuffle options so correct answer is not always first
+  var og = document.getElementById('optionsGrid');
   og.innerHTML = '';
   var labels = ['A', 'B', 'C', 'D'];
-  q.options.forEach(function(opt, i) {
+
+  // make a copy of options and shuffle
+  var shuffled = q.options.slice();
+  for (var s = shuffled.length - 1; s > 0; s--) {
+    var randIdx = Math.floor(Math.random() * (s + 1));
+    var temp = shuffled[s];
+    shuffled[s] = shuffled[randIdx];
+    shuffled[randIdx] = temp;
+  }
+
+  shuffled.forEach(function(opt, i) {
     var btn       = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.innerHTML = '<span class="option-label">' + labels[i] + '</span>' + opt.text;
-    btn.onclick   = function() { selectAnswer(i, btn, opt.correct, q); };
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<span class="opt-label">' + labels[i] + '</span>' + opt.text;
+    btn.onclick   = function() { selectAnswer(i, btn, opt.correct, q, shuffled); };
     og.appendChild(btn);
   });
 
@@ -728,31 +739,29 @@ function timeUp() {
   var r    = ROUNDS[currentRound];
   var q    = r.questions[currentQ];
 
-  // reveal correct answer
-  var btns = document.querySelectorAll('.option-btn');
+  var btns = document.querySelectorAll('.opt-btn');
   btns.forEach(function(btn, i) {
     btn.disabled = true;
-    if (q.options[i].correct) btn.classList.add('reveal');
   });
 
-  showFeedback(false, "⏰ Time's up! The correct answer is highlighted above.", q.tip);
+  showFeedback(false, "Time's up! " + q.feedback, q.tip);
   document.getElementById('nextBtn').style.display = 'inline-block';
 }
 
 // ═══════════════════════════════════════════
 // SELECT ANSWER
 // ═══════════════════════════════════════════
-function selectAnswer(idx, btn, isCorrect, q) {
+function selectAnswer(idx, btn, isCorrect, q, shuffled) {
   if (answered) return;
   answered = true;
   clearInterval(timerInterval);
   totalAnswered++;
 
-  // disable all buttons and reveal correct one
-  var allBtns = document.querySelectorAll('.option-btn');
+  // use shuffled options to find and reveal correct button
+  var allBtns = document.querySelectorAll('.opt-btn');
   allBtns.forEach(function(b, i) {
     b.disabled = true;
-    if (q.options[i].correct && i !== idx) b.classList.add('reveal');
+    if (shuffled[i].correct && i !== idx) b.classList.add('reveal');
   });
 
   if (isCorrect) {
@@ -760,7 +769,6 @@ function selectAnswer(idx, btn, isCorrect, q) {
     combo++;
     correctCount++;
 
-    // calculate score based on speed and combo
     var pts = 100;
     if (timeLeft >= 12) pts = 150;
     else if (timeLeft >= 8) pts = 120;
@@ -770,13 +778,13 @@ function selectAnswer(idx, btn, isCorrect, q) {
     roundScore += pts;
 
     document.getElementById('scoreDisplay').textContent = totalScore;
-    showScorePopup('+' + pts + (combo >= 3 ? ' 🔥 COMBO!' : ' ⭐'));
-    showFeedback(true, '✅ ' + q.feedback, q.tip);
+    showScorePopup('+' + pts + (combo >= 3 ? ' COMBO!' : ' '));
+    showFeedback(true, 'Correct! ' + q.feedback, q.tip);
 
   } else {
     btn.classList.add('wrong');
     combo = 0;
-    showFeedback(false, '❌ Not quite! ' + q.feedback, q.tip);
+    showFeedback(false, 'Not quite! ' + q.feedback, q.tip);
   }
 
   document.getElementById('nextBtn').style.display = 'inline-block';
