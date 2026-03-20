@@ -2,7 +2,7 @@
 // VOCABULARY DATABASE
 // ═══════════════════════════════════════════
 var VOCAB_DB = {
-  "appointment":       { def:"A scheduled time to visit the salon.",                        ex:'"I have an appointment at 3pm under Sarah."' },
+  "appointment":       { def:"A scheduled time to visit the salon.",                        ex:'"I have an appointment at 3pm."' },
   "walk-in":           { def:"Coming to the salon WITHOUT an appointment.",                 ex:'"I\'m a walk-in — do you have availability?"' },
   "availability":      { def:"Open/free time slots at the salon.",                          ex:'"Do you have any availability right now?"' },
   "book":              { def:"To schedule or reserve an appointment.",                      ex:'"Can I book an appointment for Saturday?"' },
@@ -15,28 +15,26 @@ var VOCAB_DB = {
   "acrylic":           { def:"A popular type of artificial nail.",                          ex:'"Do you do acrylic nails?"' },
   "gel":               { def:"Polish cured under UV light. Lasts 2-3 weeks.",              ex:'"I\'ll go with gel — I want it to last longer."' },
   "dip powder":        { def:"A nail system using powder. Strong and long-lasting.",        ex:'"I\'d like dip powder nails, please."' },
-  "fill-in":           { def:"Touching up grown-out acrylic nails. Also called fill.",      ex:'"I need a fill-in — they\'ve grown out."' },
+  "fill-in":           { def:"Touching up grown-out acrylic nails.",                        ex:'"I need a fill-in — they\'ve grown out."' },
   "soak off":          { def:"Removing gel or dip nails using acetone.",                    ex:'"I\'d like to soak off my gel first."' },
   "grown out":         { def:"When nails have grown away from where product was applied.",  ex:'"My acrylics have grown out."' },
-  "What's included":   { def:"Asking what is part of a service or package.",               ex:'"What\'s included in the deluxe pedicure?"' },
-  "I'll go with":      { def:"A natural way to say I choose or I decide.",                  ex:'"I\'ll go with gel, please."' },
-  "coffin":            { def:"Nail shape — long with a flat squared-off tip.",             ex:'"Can I get coffin shape, please?"' },
-  "almond":            { def:"Nail shape — oval with a slightly pointed tip.",             ex:'"I\'d like almond shape."' },
-  "stiletto":          { def:"Nail shape — very long and sharply pointed.",                ex:'"Stiletto please — I love them sharp!"' },
-  "square":            { def:"Nail shape — flat across top with sharp corners.",           ex:'"Square shape, please."' },
-  "oval":              { def:"Nail shape — rounded on all sides.",                         ex:'"Oval would look elegant."' },
-  "round":             { def:"Nail shape — gently curved, natural looking.",               ex:'"Just a round shape, please."' },
-  "medium":            { def:"A size between short and long.",                              ex:'"Medium length — not too long, not too short."' },
-  "past my fingertip": { def:"Slightly longer than the end of your finger.",               ex:'"Just a little past my fingertip, please."' },
+  "coffin":            { def:"Nail shape — long with a flat squared-off tip.",              ex:'"Can I get coffin shape, please?"' },
+  "almond":            { def:"Nail shape — oval with a slightly pointed tip.",              ex:'"I\'d like almond shape."' },
+  "stiletto":          { def:"Nail shape — very long and sharply pointed.",                 ex:'"Stiletto please — I love them sharp!"' },
+  "square":            { def:"Nail shape — flat across top with sharp corners.",            ex:'"Square shape, please."' },
+  "oval":              { def:"Nail shape — rounded on all sides.",                          ex:'"Oval would look elegant."' },
+  "round":             { def:"Nail shape — gently curved, natural looking.",                ex:'"Just a round shape, please."' },
+  "medium":            { def:"A size between short and long.",                              ex:'"Medium length please."' },
+  "past my fingertip": { def:"Slightly longer than the end of your finger.",                ex:'"Just a little past my fingertip, please."' },
   "shade":             { def:"A specific variation of a color.",                            ex:'"Which shade of pink do you have?"' },
-  "ombre":             { def:"Two colors that gradually fade into each other.",            ex:'"I\'d love an ombre design."' },
-  "French tip":        { def:"Classic style — white tip on a natural or pink base.",      ex:'"Can I get a classic French tip?"' },
+  "ombre":             { def:"Two colors that gradually fade into each other.",             ex:'"I\'d love an ombre design."' },
+  "French tip":        { def:"Classic style — white tip on a natural or pink base.",       ex:'"Can I get a classic French tip?"' },
   "glitter":           { def:"Sparkly particles added to nail polish.",                     ex:'"Can you add some glitter on top?"' },
   "chrome":            { def:"A metallic mirror-like finish on nails.",                     ex:'"I\'d like a chrome finish."' },
   "matte":             { def:"A finish with NO shine — flat and modern looking.",           ex:'"I\'d like matte please."' },
   "glossy":            { def:"A shiny high-shine finish.",                                  ex:'"Can I get a glossy top coat?"' },
-  "rhinestones":       { def:"Small jewel-like gems placed on nails.",                     ex:'"Can you add some rhinestones?"' },
-  "accent nail":       { def:"One nail with a special design different from the others.",  ex:'"Can my ring finger be an accent nail?"' },
+  "rhinestones":       { def:"Small jewel-like gems placed on nails.",                      ex:'"Can you add some rhinestones?"' },
+  "accent nail":       { def:"One nail with a special design different from the others.",   ex:'"Can my ring finger be an accent nail?"' },
   "solid color":       { def:"One plain single color on all nails.",                        ex:'"Just solid color today."' },
   "total":             { def:"The final amount of money to pay.",                           ex:'"Your total comes to \$55."' },
   "tip":               { def:"Extra money given for good service.",                         ex:'"Is the tip included?"' },
@@ -51,14 +49,23 @@ var VOCAB_DB = {
 };
 
 // ═══════════════════════════════════════════
+// HELPER — get current questions based on role
+// ═══════════════════════════════════════════
+function getQuestions(r) {
+  if (playerRole === 'customer') {
+    return r.customerQuestions;
+  } else {
+    return r.techQuestions;
+  }
+}
+
+// ═══════════════════════════════════════════
 // GAME DATA — ALL 5 ROUNDS
 // ═══════════════════════════════════════════
 var ROUNDS = [
   {
     id:1, title:"Greeting & Welcome", icon:"🚪",
     vocab:["appointment","walk-in","availability","welcome","book","recommended","don't mind"],
-
-    // ── CUSTOMER questions ──────────────────────
     customerQuestions:[
       {
         scene:"Scene 1 — Walking In", icon:"🚪", title:"Entering the Salon",
@@ -67,13 +74,13 @@ var ROUNDS = [
         ],
         prompt:"You just walked in. What is the BEST natural English response?",
         options:[
-          { text:'"Hi! I\'d like to get a manicure today, please!"',                              correct:true  },
-          { text:'"Yes, nail please."',                                                            correct:false },
-          { text:'"I want beautiful nail."',                                                       correct:false },
-          { text:'"Nail shop good."',                                                              correct:false }
+          { text:'"Hi! I\'d like to get a manicure today, please!"', correct:true  },
+          { text:'"Yes, nail please."',                               correct:false },
+          { text:'"I want beautiful nail."',                          correct:false },
+          { text:'"Nail shop good."',                                 correct:false }
         ],
-        feedback:"Great! Always greet back and clearly state what service you want. Very professional and polite!",
-        tip:"💡 Use 'I'd like to...' + the service name. Example: 'I'd like to get a manicure, please.'"
+        feedback:"Great! Always greet back and clearly state what service you want!",
+        tip:"💡 Use 'I'd like to...' + the service name. Very polite and professional!"
       },
       {
         scene:"Scene 1 — Appointment", icon:"📅", title:"No Appointment",
@@ -88,7 +95,7 @@ var ROUNDS = [
           { text:'"No. I just came."',                                            correct:false }
         ],
         feedback:'"Walk-in" means no appointment. "Availability" = open time slots. Very natural!',
-        tip:"💡 'Walk-in' = no appointment. 'Do you have availability?' is very polite and professional!"
+        tip:"💡 'Walk-in' = no appointment. 'Do you have availability?' sounds very polite!"
       },
       {
         scene:"Scene 1 — Wait Time", icon:"⏳", title:"Happy to Wait",
@@ -103,7 +110,7 @@ var ROUNDS = [
           { text:'"20 minute is good."',                                   correct:false }
         ],
         feedback:'"That\'s totally fine!" and "I don\'t mind" are very natural American expressions!',
-        tip:"💡 'I don't mind' = I am okay with it. Use this phrase in many daily situations!"
+        tip:"💡 'I don't mind' = I am okay with it. Use this in many daily situations!"
       },
       {
         scene:"Scene 1 — Meeting Tech", icon:"🤝", title:"Technician Says Hello",
@@ -136,8 +143,6 @@ var ROUNDS = [
         tip:"💡 'Recommended' = someone told you it was good. Very natural everyday English!"
       }
     ],
-
-    // ── NAIL TECH questions ─────────────────────
     techQuestions:[
       {
         scene:"Scene 1 — Customer Arrives", icon:"🚪", title:"Greet the Customer",
@@ -146,13 +151,13 @@ var ROUNDS = [
         ],
         prompt:"You are the Nail Tech. What is the BEST way to greet the customer?",
         options:[
-          { text:'"Hi! Welcome to Pretty Nails! How can I help you today?"',  correct:true  },
-          { text:'"Yes? What you want?"',                                      correct:false },
-          { text:'"Come in. Sit."',                                            correct:false },
-          { text:'"We are busy. Wait."',                                       correct:false }
+          { text:'"Hi! Welcome to Pretty Nails! How can I help you today?"', correct:true  },
+          { text:'"Yes? What you want?"',                                     correct:false },
+          { text:'"Come in. Sit."',                                           correct:false },
+          { text:'"We are busy. Wait."',                                      correct:false }
         ],
-        feedback:"Perfect greeting! Warm, professional, and welcoming. This makes customers feel comfortable!",
-        tip:"💡 Always smile and say 'Welcome!' first. First impressions are very important in a US salon!"
+        feedback:"Perfect greeting! Warm, professional and welcoming. First impressions matter!",
+        tip:"💡 Always smile and say 'Welcome!' first. First impressions are very important!"
       },
       {
         scene:"Scene 1 — Check Appointment", icon:"📅", title:"Ask About Appointment",
@@ -166,7 +171,7 @@ var ROUNDS = [
           { text:'"Appointment? Yes or no?"',                                             correct:false },
           { text:'"You have reservation?"',                                               correct:false }
         ],
-        feedback:"Excellent! Giving both options ('appointment or walk-in') is very professional and helpful!",
+        feedback:"Excellent! Giving both options makes it easy and comfortable for the customer!",
         tip:"💡 Always give the customer TWO options so they don't feel embarrassed either way!"
       },
       {
@@ -181,8 +186,8 @@ var ROUNDS = [
           { text:'"We busy. Come back later."',                                                        correct:false },
           { text:'"Wait 25 minute. Sit there."',                                                       correct:false }
         ],
-        feedback:"Great! Always offer the wait time as a question — give the customer the choice. Very polite!",
-        tip:"💡 Say 'Would that work for you?' instead of just telling them. It shows respect!"
+        feedback:"Great! Always offer the wait time as a question. Give the customer the choice!",
+        tip:"💡 Say 'Would that work for you?' instead of just telling them. Shows respect!"
       },
       {
         scene:"Scene 1 — Introduce Yourself", icon:"🤝", title:"Introduce to Customer",
@@ -196,8 +201,8 @@ var ROUNDS = [
           { text:'"My name Lisa. Start now?"',                                                   correct:false },
           { text:'"OK let\'s begin the nail."',                                                  correct:false }
         ],
-        feedback:"Beautiful introduction! Always say your name and 'I'll be taking care of you today.' Very professional!",
-        tip:"💡 'I'll be taking care of you today' is the standard professional phrase in US service jobs!"
+        feedback:"Beautiful! 'I'll be taking care of you today' is the standard professional phrase!",
+        tip:"💡 'I'll be taking care of you today' is used in all US service jobs. Learn it!"
       },
       {
         scene:"Scene 1 — First Time Customer", icon:"🌟", title:"Welcome First-Timer",
@@ -207,20 +212,18 @@ var ROUNDS = [
         prompt:"The customer is nervous — it's their first time! How do you make them feel welcome?",
         options:[
           { text:'"How exciting! Don\'t worry at all — I\'ll walk you through everything step by step!"', correct:true  },
-          { text:'"OK. What service you want?"',                                                          correct:false },
-          { text:'"First time? Don\'t be nervous."',                                                      correct:false },
-          { text:'"No problem. Sit here."',                                                               correct:false }
+          { text:'"OK. What service you want?"',                                                           correct:false },
+          { text:'"First time? Don\'t be nervous."',                                                       correct:false },
+          { text:'"No problem. Sit here."',                                                                correct:false }
         ],
-        feedback:"Perfect! Making nervous customers feel safe and excited is excellent customer service!",
-        tip:"💡 'I'll walk you through everything' = I will explain each step. Very reassuring phrase!"
+        feedback:"Perfect! Making nervous customers feel safe and excited is excellent service!",
+        tip:"💡 'I'll walk you through everything' = I will explain each step. Very reassuring!"
       }
     ]
   },
-
   {
     id:2, title:"Choosing Your Service", icon:"💅",
-    vocab:["manicure","pedicure","full set","acrylic","gel","dip powder","fill-in","soak off","What's included","I'll go with","grown out"],
-
+    vocab:["manicure","pedicure","full set","acrylic","gel","dip powder","fill-in","soak off"],
     customerQuestions:[
       {
         scene:"Scene 2 — Service Selection", icon:"💅", title:"What Service Today?",
@@ -281,7 +284,7 @@ var ROUNDS = [
           { text:'"I want fill the nail hole."',                                 correct:false },
           { text:'"Touch up my acrylic."',                                       correct:false }
         ],
-        feedback:'"Fill-in" is exactly the right word. "Grown out" is what every regular customer says!',
+        feedback:'"Fill-in" is exactly the right word. "Grown out" is what every regular says!',
         tip:"💡 'Grown out' = the nail grew away from where product was applied."
       },
       {
@@ -296,11 +299,10 @@ var ROUNDS = [
           { text:'"Remove gel then make normal."',                                             correct:false },
           { text:'"No more gel, then regular."',                                               correct:false }
         ],
-        feedback:'"Soak off" is the professional term for removing gel nails. Very natural!',
-        tip:"💡 'Soak off' = remove gel nails using acetone. Knowing this makes you sound like a regular!"
+        feedback:'"Soak off" is the professional term for removing gel nails!',
+        tip:"💡 'Soak off' = remove gel nails using acetone."
       }
     ],
-
     techQuestions:[
       {
         scene:"Scene 2 — Ask Service", icon:"💅", title:"Find Out What They Want",
@@ -314,7 +316,7 @@ var ROUNDS = [
           { text:'"Sit down please."',                       correct:false },
           { text:'"How much do you want to spend?"',         correct:false }
         ],
-        feedback:"Always ask about the SERVICE TYPE first before anything else. This is priority #1!",
+        feedback:"Always ask about the SERVICE TYPE first before anything else. Priority #1!",
         tip:"💡 As a nail tech: always establish the SERVICE before color, design, or length!"
       },
       {
@@ -329,11 +331,11 @@ var ROUNDS = [
           { text:'"Gel more expensive. Regular normal."',    correct:false },
           { text:'"Both are good. You choose."',             correct:false }
         ],
-        feedback:"Excellent explanation! You gave both pros to help the customer decide. Very professional!",
+        feedback:"Excellent! You gave both pros to help the customer decide. Very professional!",
         tip:"💡 Always explain BOTH options clearly. Let the customer make an informed choice!"
       },
       {
-        scene:"Scene 2 — Upsell Deluxe", icon:"🦶", title:"Suggest the Upgrade",
+        scene:"Scene 2 — Suggest Upgrade", icon:"🦶", title:"Suggest the Upgrade",
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"Can I get a regular pedicure today?" }
         ],
@@ -342,13 +344,13 @@ var ROUNDS = [
           { text:'"Of course! We also have a deluxe pedicure with a hot stone massage for just \$20 more — would you like to hear about it?"', correct:true  },
           { text:'"Regular is \$30. Deluxe is \$50."',         correct:false },
           { text:'"You should get deluxe it\'s better."',    correct:false },
-          { text:'"Deluxe pedicure is available also."',     correct:false }
+          { text:'"Deluxe pedicure is available."',          correct:false }
         ],
-        feedback:"Perfect upsell! You mentioned the benefit AND asked if they want to know more. Not pushy!",
-        tip:"💡 'Would you like to hear about it?' = offering without pressuring. Great sales skill!"
+        feedback:"Perfect upsell! You mentioned the benefit AND asked if they want to know more!",
+        tip:"💡 'Would you like to hear about it?' = offering without pressuring. Great skill!"
       },
       {
-        scene:"Scene 2 — Check Fill or Full Set", icon:"🔧", title:"Fill-in or New Set?",
+        scene:"Scene 2 — Fill or Full Set?", icon:"🔧", title:"Fill-in or New Set?",
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"Hi, I have acrylic nails and they've grown out a lot." }
         ],
@@ -359,7 +361,7 @@ var ROUNDS = [
           { text:'"You want fill-in?"',                      correct:false },
           { text:'"How long your acrylic?"',                 correct:false }
         ],
-        feedback:"Great question! Giving both options clearly shows expertise and professionalism!",
+        feedback:"Great! Giving both options clearly shows expertise and professionalism!",
         tip:"💡 Always give the customer a clear choice between TWO specific options!"
       },
       {
@@ -367,7 +369,7 @@ var ROUNDS = [
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"I want a manicure but I still have old gel on my nails." }
         ],
-        prompt:"You need to soak off the old gel first. How do you explain this to the customer?",
+        prompt:"You need to soak off the old gel first. How do you explain this?",
         options:[
           { text:'"No worries! We\'ll need to soak off your old gel first — that takes about 15 minutes — then we\'ll do your fresh manicure!"', correct:true  },
           { text:'"We remove gel first then do manicure."',  correct:false },
@@ -375,15 +377,13 @@ var ROUNDS = [
           { text:'"Soak off \$10 extra."',                    correct:false }
         ],
         feedback:"Perfect! You explained the process AND the time. Customers love knowing what to expect!",
-        tip:"💡 Always tell customers HOW LONG each step takes. It reduces anxiety and builds trust!"
+        tip:"💡 Always tell customers HOW LONG each step takes. Reduces anxiety and builds trust!"
       }
     ]
   },
-
   {
     id:3, title:"Nail Shape & Length", icon:"📐",
-    vocab:["coffin","almond","stiletto","square","oval","round","medium","past my fingertip","shade"],
-
+    vocab:["coffin","almond","stiletto","square","oval","round","medium","past my fingertip"],
     customerQuestions:[
       {
         scene:"Scene 3 — Choose Shape", icon:"💎", title:"Picking Your Shape",
@@ -427,7 +427,7 @@ var ROUNDS = [
           { text:'"Medium. In the middle."',          correct:false },
           { text:'"Middle nail length."',             correct:false }
         ],
-        feedback:"'Just past my fingertips' gives a clear visual reference. Excellent communication!",
+        feedback:"'Just past my fingertips' gives a very clear visual reference!",
         tip:"💡 Use body references: 'past my fingertip' or point to show exactly where!"
       },
       {
@@ -448,7 +448,7 @@ var ROUNDS = [
       {
         scene:"Scene 3 — Confirm Shape", icon:"✅", title:"Make Sure It's Right",
         dialogue:[
-          { side:"tech", emoji:"💅", speaker:"Nail Tech", text:"I'm going to start filing now — does this shape look right so far?" }
+          { side:"tech", emoji:"💅", speaker:"Nail Tech", text:"Does this shape look right so far?" }
         ],
         prompt:"The shape looks great but you want them a tiny bit longer. What do you say?",
         options:[
@@ -461,7 +461,6 @@ var ROUNDS = [
         tip:"💡 'Could you...?' is more polite than 'Can you...?' Use it when making requests!"
       }
     ],
-
     techQuestions:[
       {
         scene:"Scene 3 — Ask Shape", icon:"💎", title:"What Shape Does She Want?",
@@ -475,23 +474,23 @@ var ROUNDS = [
           { text:'"You want coffin?"',                correct:false },
           { text:'"Shape is important. Choose one."', correct:false }
         ],
-        feedback:"Perfect! You listed the options clearly so the customer can make an informed choice!",
-        tip:"💡 Always list examples when asking about shape — many customers don't know the names!"
+        feedback:"Perfect! You listed the options so the customer can make an informed choice!",
+        tip:"💡 Always list examples when asking about shape — customers may not know the names!"
       },
       {
         scene:"Scene 3 — Recommend Shape", icon:"💡", title:"Give a Shape Recommendation",
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"Hmm, I'm not sure what shape would look good on me." }
         ],
-        prompt:"You are the Nail Tech. Give her a specific recommendation based on her hands.",
+        prompt:"You are the Nail Tech. Give her a specific recommendation.",
         options:[
           { text:'"With your finger shape, I think almond or oval would look really elegant — they elongate the fingers beautifully!"', correct:true  },
           { text:'"All shapes are nice. You choose."', correct:false },
           { text:'"Coffin is most popular now."',      correct:false },
           { text:'"What shape do you like?"',          correct:false }
         ],
-        feedback:"Excellent! You gave a specific recommendation AND explained WHY. Builds so much trust!",
-        tip:"💡 Always explain WHY you recommend something. 'Because it will...' makes you sound expert!"
+        feedback:"You gave a specific recommendation AND explained WHY. Builds so much trust!",
+        tip:"💡 Always explain WHY you recommend something. 'Because it will...' sounds expert!"
       },
       {
         scene:"Scene 3 — Ask Length", icon:"📏", title:"How Long Does She Want?",
@@ -505,15 +504,15 @@ var ROUNDS = [
           { text:'"You want long nail?"',             correct:false },
           { text:'"Short medium long. Which one?"',   correct:false }
         ],
-        feedback:"Great! You confirmed her shape choice AND asked the next logical question smoothly!",
+        feedback:"Great! You confirmed her choice AND asked the next logical question smoothly!",
         tip:"💡 Always CONFIRM what the customer said before moving to the next question!"
       },
       {
-        scene:"Scene 3 — Check Length While Filing", icon:"✂️", title:"Check In While Working",
+        scene:"Scene 3 — Check While Filing", icon:"✂️", title:"Check In While Working",
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"*You are filing the nails to medium length*" }
         ],
-        prompt:"You want to make sure the customer is happy with the length so far. What do you ask?",
+        prompt:"You want to make sure the customer is happy with the length so far.",
         options:[
           { text:'"How does this length look so far? Would you like them a little longer or shorter?"', correct:true  },
           { text:'"Length okay?"',                    correct:false },
@@ -530,21 +529,19 @@ var ROUNDS = [
         ],
         prompt:"You are the Nail Tech. How do you respond to the customer's request?",
         options:[
-          { text:'"Of course! No problem at all — I\'ll shorten them right now. Just let me know when the length looks perfect to you!"', correct:true  },
+          { text:'"Of course! No problem at all — I\'ll shorten them right now. Just let me know when the length looks perfect!"', correct:true  },
           { text:'"OK. I make shorter."',             correct:false },
           { text:'"Sure. Short now."',                correct:false },
           { text:'"You want shorter? Okay."',         correct:false }
         ],
-        feedback:"Excellent response! 'No problem at all' reassures the customer. You never make them feel bad!",
+        feedback:"'No problem at all' reassures the customer. Never make them feel bad for changing their mind!",
         tip:"💡 Never make a customer feel bad for changing their mind. Always say 'No problem at all!'"
       }
     ]
   },
-
   {
     id:4, title:"Color & Design", icon:"🎨",
     vocab:["ombre","French tip","glitter","chrome","matte","glossy","rhinestones","accent nail","solid color","shade"],
-
     customerQuestions:[
       {
         scene:"Scene 4 — Pick Color", icon:"🎨", title:"Choosing Your Color",
@@ -555,7 +552,7 @@ var ROUNDS = [
         options:[
           { text:'"I\'m thinking pink, but not sure which shade. Can you show me your options?"', correct:true  },
           { text:'"Pink color. Show me pinks."',      correct:false },
-          { text:'"I want pink but which one I don\'t know."', correct:false },
+          { text:'"I want pink but I don\'t know which."', correct:false },
           { text:'"All the pinks please."',           correct:false }
         ],
         feedback:'"Can you show me your options?" is perfectly natural in any US store!',
@@ -586,7 +583,7 @@ var ROUNDS = [
           { text:'"I\'d like a classic French tip — white tips with a natural pink base."', correct:true  },
           { text:'"White on top natural bottom."',    correct:false },
           { text:'"French nail style."',              correct:false },
-          { text:'"White nail tip France style."',   correct:false }
+          { text:'"White nail tip France style."',    correct:false }
         ],
         feedback:'"Classic French tip" is exactly the right term. Very professional!',
         tip:"💡 'French tip' = white tip + natural/pink base. A timeless classic style!"
@@ -622,10 +619,9 @@ var ROUNDS = [
         tip:"💡 Matte = no shine. Glossy = shiny. Chrome = mirror. Shimmer = sparkles!"
       }
     ],
-
     techQuestions:[
       {
-        scene:"Scene 4 — Ask About Color", icon:"🎨", title:"What Color Does She Like?",
+        scene:"Scene 4 — Ask Color", icon:"🎨", title:"What Color Does She Like?",
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"Okay I'm ready to pick the color!" }
         ],
@@ -636,7 +632,7 @@ var ROUNDS = [
           { text:'"Pick a color from here."',         correct:false },
           { text:'"We have many colors. Choose."',    correct:false }
         ],
-        feedback:"Perfect! Giving two options (own idea OR chart) makes the customer feel comfortable!",
+        feedback:"Giving two options makes the customer feel comfortable and guided!",
         tip:"💡 Always offer to SHOW the color chart — customers often don't know what's available!"
       },
       {
@@ -646,13 +642,13 @@ var ROUNDS = [
         ],
         prompt:"You are the Nail Tech. What design do you suggest?",
         options:[
-          { text:'"How about a soft rose pink with a gold glitter accent nail and tiny rhinestones? Perfect for a romantic evening!"', correct:true  },
+          { text:'"How about soft rose pink with a gold glitter accent nail and tiny rhinestones? Perfect for a romantic evening!"', correct:true  },
           { text:'"Red is romantic."',                correct:false },
           { text:'"What color you like?"',            correct:false },
           { text:'"Many romantic designs available."', correct:false }
         ],
-        feedback:"Fantastic! Specific suggestion + connected to the occasion = excellent service!",
-        tip:"💡 Always connect your suggestion to the customer's event or occasion. Shows you listened!"
+        feedback:"Specific suggestion + connected to the occasion = excellent customer service!",
+        tip:"💡 Always connect your suggestion to the customer's event. Shows you listened!"
       },
       {
         scene:"Scene 4 — Explain Ombre", icon:"🌈", title:"Explain the Design",
@@ -666,11 +662,11 @@ var ROUNDS = [
           { text:'"Ombre is fade color nail."',       correct:false },
           { text:'"Two color blend. Very pretty."',   correct:false }
         ],
-        feedback:"Excellent explanation! You described it clearly AND offered to show an example. Perfect!",
-        tip:"💡 Always offer to SHOW an example when explaining a design. A picture = 1000 words!"
+        feedback:"You described it clearly AND offered to show an example. Perfect!",
+        tip:"💡 Always offer to SHOW an example when explaining a design!"
       },
       {
-        scene:"Scene 4 — Ask About Finish", icon:"✨", title:"Matte or Glossy?",
+        scene:"Scene 4 — Ask Finish", icon:"✨", title:"Matte or Glossy?",
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"I think the color and design look perfect!" }
         ],
@@ -681,34 +677,32 @@ var ROUNDS = [
           { text:'"Matte or glossy?"',                correct:false },
           { text:'"What top coat you want?"',         correct:false }
         ],
-        feedback:"Perfect question! 'One last thing' is a great transition phrase in service conversations!",
-        tip:"💡 'One last thing...' = a smooth way to introduce the final question. Very natural!"
+        feedback:"'One last thing' is a great transition phrase in service conversations!",
+        tip:"💡 'One last thing...' = a smooth way to introduce the final question!"
       },
       {
-        scene:"Scene 4 — Show Finished Design", icon:"🌟", title:"Reveal the Finished Look",
+        scene:"Scene 4 — Reveal Finished Look", icon:"🌟", title:"Show the Finished Nails",
         dialogue:[
           { side:"customer", emoji:"💁‍♀️", speaker:"Customer", text:"*You just finished the nail art design*" }
         ],
-        prompt:"You are the Nail Tech. How do you present the finished design to the customer?",
+        prompt:"You are the Nail Tech. How do you present the finished design?",
         options:[
-          { text:'"Ta-da! What do you think? I\'m so happy with how the design turned out — it really suits you!"', correct:true  },
+          { text:'"Ta-da! What do you think? I\'m so happy with how it turned out — it really suits you!"', correct:true  },
           { text:'"Done. Look at it."',               correct:false },
           { text:'"Finish. You like?"',               correct:false },
           { text:'"I\'m done. Check your nail."',     correct:false }
         ],
-        feedback:"Wonderful! Sharing your own enthusiasm about the work makes customers excited too!",
-        tip:"💡 'It really suits you!' = it looks great on you specifically. Very personal and warm!"
+        feedback:"Sharing your own enthusiasm makes customers excited too! Very natural!",
+        tip:"💡 'It really suits you!' = it looks great on you specifically. Warm and personal!"
       }
     ]
   },
-
   {
     id:5, title:"Price & Payment", icon:"💰",
     vocab:["total","tip","gratuity","receipt","cash","card","Zelle","Venmo","included","additional charge"],
-
     customerQuestions:[
       {
-        scene:"Scene 5 — Ask Price First", icon:"💰", title:"Ask the Total Cost",
+        scene:"Scene 5 — Ask Price", icon:"💰", title:"Ask the Total Cost",
         dialogue:[
           { side:"tech", emoji:"💅", speaker:"Nail Tech", text:"I can do all of that for you — no problem!" }
         ],
@@ -719,7 +713,7 @@ var ROUNDS = [
           { text:'"Tell me money for nail."',         correct:false },
           { text:'"What is cost?"',                   correct:false }
         ],
-        feedback:'"Before we start, how much will this be?" Very natural and smart. Always ask first!',
+        feedback:'"Before we start, how much will this be?" Very natural and smart!',
         tip:"💡 Always ask about price BEFORE services start to avoid surprises!"
       },
       {
@@ -749,8 +743,8 @@ var ROUNDS = [
           { text:'"Gratuity included?"',              correct:false },
           { text:'"I need give tip?"',                correct:false }
         ],
-        feedback:'"Is the tip included?" is very common and natural at US salons. Usually NOT included!',
-        tip:"💡 In the US, tipping 15-20% at nail salons is customary. Cash tips are preferred!"
+        feedback:'"Is the tip included?" is very common and natural at US salons!',
+        tip:"💡 In the US, tipping 15-20% at nail salons is customary. Cash tips preferred!"
       },
       {
         scene:"Scene 5 — Polite Complaint", icon:"😟", title:"Something Isn't Right",
@@ -764,7 +758,7 @@ var ROUNDS = [
           { text:'"Not good! Do again."',             correct:false },
           { text:'"One nail bad shape."',             correct:false }
         ],
-        feedback:"Start with a compliment then mention the issue gently. Classic American polite style!",
+        feedback:"Start with a compliment then mention the issue gently. Classic polite American style!",
         tip:"💡 Sandwich: Positive → Gentle issue → Positive. Very polite and effective!"
       },
       {
@@ -779,11 +773,10 @@ var ROUNDS = [
           { text:'"I come back 3 week."',              correct:false },
           { text:'"Next appointment 3 weeks."',        correct:false }
         ],
-        feedback:'"Can I book my next appointment?" is perfect! "About 3 weeks" is very natural!',
-        tip:"💡 'About' + time = approximately. 'About 3 weeks.' 'About 2 hours.' Very natural!"
+        feedback:'"Can I book my next appointment?" is perfect! Very natural!',
+        tip:"💡 'About' + time = approximately. 'About 3 weeks.' Very natural!"
       }
     ],
-
     techQuestions:[
       {
         scene:"Scene 5 — Give Total", icon:"💰", title:"Tell Customer the Price",
@@ -797,7 +790,7 @@ var ROUNDS = [
           { text:'"That is 65 dollar."',              correct:false },
           { text:'"You owe \$65."',                    correct:false }
         ],
-        feedback:"Perfect! 'Your total comes to...' + ask payment method in one smooth sentence!",
+        feedback:"'Your total comes to...' + ask payment method. One smooth professional sentence!",
         tip:"💡 'Your total comes to...' is the standard professional phrase for giving a price!"
       },
       {
@@ -812,7 +805,7 @@ var ROUNDS = [
           { text:'"Yes but extra charge for card."',  correct:false },
           { text:'"Card okay but cost more."',        correct:false }
         ],
-        feedback:"Excellent! You warned them AND offered alternatives. 'Whatever works best for you' is very friendly!",
+        feedback:"You warned them AND offered alternatives. 'Whatever works best for you' is very friendly!",
         tip:"💡 Always mention the fee BEFORE processing the payment. Transparency builds trust!"
       },
       {
@@ -827,7 +820,7 @@ var ROUNDS = [
           { text:'"Tip is separate. 20% is good."',   correct:false },
           { text:'"No tip in price. You give tip."',  correct:false }
         ],
-        feedback:"Perfect! You gave a guideline BUT said it's optional. Never pressure customers to tip!",
+        feedback:"You gave a guideline BUT said it's optional. Never pressure customers to tip!",
         tip:"💡 'It's completely up to you' = no pressure. Always say this when mentioning tips!"
       },
       {
@@ -842,7 +835,7 @@ var ROUNDS = [
           { text:'"Sorry. I repair now."',            correct:false },
           { text:'"Let me see. I fix."',              correct:false }
         ],
-        feedback:"Excellent! Apologize genuinely AND commit to fixing it. 'I want you to be 100% happy' is powerful!",
+        feedback:"Apologize genuinely AND commit to fixing it. 'I want you to be 100% happy' is powerful!",
         tip:"💡 '100% happy before you leave' = your standard of service. Very professional!"
       },
       {
@@ -857,7 +850,7 @@ var ROUNDS = [
           { text:'"You want next appointment?"',      correct:false },
           { text:'"Book again before you go?"',       correct:false }
         ],
-        feedback:"Amazing! You mentioned when to come back AND offered to book right now. Very professional!",
+        feedback:"You mentioned when to come back AND offered to book right now. Very professional!",
         tip:"💡 Always try to rebook the customer before they leave. It keeps your schedule full!"
       }
     ]
@@ -893,7 +886,7 @@ function showScreen(id) {
 }
 
 // ═══════════════════════════════════════════
-// WELCOME → ROLE SELECT
+// WELCOME
 // ═══════════════════════════════════════════
 function goToRoleSelect() {
   var n = document.getElementById('playerName').value.trim();
@@ -916,7 +909,7 @@ function selectRole(role) {
   var txt  = document.getElementById('roleConfirmText');
   wrap.style.display = 'block';
   if (role === 'customer') {
-    txt.innerHTML = '💁‍♀️ You are the <strong>Customer</strong>! Practice asking for nail services in English!';
+    txt.innerHTML = '💁 You are the <strong>Customer</strong>! Practice asking for nail services in English!';
   } else {
     txt.innerHTML = '💅 You are the <strong>Nail Technician</strong>! Practice serving customers professionally!';
   }
@@ -946,7 +939,7 @@ function loadRoundIntro() {
   var vl = document.getElementById('roundVocabList');
   vl.innerHTML = '';
   r.vocab.forEach(function(w) {
-    var chip = document.createElement('span');
+    var chip       = document.createElement('span');
     chip.className   = 'vocab-chip';
     chip.textContent = w;
     chip.onclick     = function() { showVocabModal(w); };
@@ -968,19 +961,15 @@ function startRound() {
 // LOAD QUESTION
 // ═══════════════════════════════════════════
 function loadQuestion() {
-  var r = ROUNDS[currentRound];
-var q = playerRole === 'customer'
-  ? r.customerQuestions[currentQ]
-  : r.techQuestions[currentQ];
+  var r  = ROUNDS[currentRound];
+  var qs = getQuestions(r);
+  var q  = qs[currentQ];
   answered = false;
 
   // top bar
   document.getElementById('scoreDisplay').textContent = totalScore;
   document.getElementById('roleBadge').textContent    = playerRole === 'customer' ? '💁 Customer' : '💅 Nail Tech';
-  
-var activeQs = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
-document.getElementById('qCounter').textContent
-  = 'Q ' + (currentQ + 1) + '/' + activeQs.length;
+  document.getElementById('qCounter').textContent     = 'Q ' + (currentQ + 1) + '/' + qs.length;
 
   // scene header
   document.getElementById('sceneName').textContent    = q.scene;
@@ -988,11 +977,10 @@ document.getElementById('qCounter').textContent
   document.getElementById('sceneTitle').textContent   = q.title;
 
   // progress bar
-var activeQs2 = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
-var pct = (currentQ / activeQs2.length) * 100;
+  var pct = (currentQ / qs.length) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
 
-  // nail bar — shows which round you're on
+  // nail bar
   var nb = document.getElementById('nailBar');
   nb.innerHTML = '';
   ROUNDS.forEach(function(rr, i) {
@@ -1013,15 +1001,12 @@ var pct = (currentQ / activeQs2.length) * 100;
     q.dialogue.forEach(function(line) {
       var wrap = document.createElement('div');
       wrap.className = 'bubble-wrap' + (line.side === 'customer' ? ' right' : '');
-
       var av = document.createElement('div');
       av.className   = 'avatar';
       av.textContent = line.emoji;
-
       var bub = document.createElement('div');
-      bub.className   = 'bubble';
-      bub.innerHTML   = '<div class="speaker">' + line.speaker + '</div>' + line.text;
-
+      bub.className = 'bubble';
+      bub.innerHTML = '<div class="spk">' + line.speaker + '</div>' + line.text;
       wrap.appendChild(av);
       wrap.appendChild(bub);
       da.appendChild(wrap);
@@ -1031,34 +1016,32 @@ var pct = (currentQ / activeQs2.length) * 100;
   // prompt
   document.getElementById('questionPrompt').textContent = q.prompt;
 
-  // answer options
-  // shuffle options so correct answer is not always first
-  var og = document.getElementById('optionsGrid');
+  // SHUFFLE options
+  var og       = document.getElementById('optionsGrid');
   og.innerHTML = '';
-  var labels = ['A', 'B', 'C', 'D'];
-
-  // make a copy of options and shuffle
+  var labels   = ['A', 'B', 'C', 'D'];
   var shuffled = q.options.slice();
   for (var s = shuffled.length - 1; s > 0; s--) {
-    var randIdx = Math.floor(Math.random() * (s + 1));
-    var temp = shuffled[s];
-    shuffled[s] = shuffled[randIdx];
+    var randIdx    = Math.floor(Math.random() * (s + 1));
+    var temp       = shuffled[s];
+    shuffled[s]    = shuffled[randIdx];
     shuffled[randIdx] = temp;
   }
-
   shuffled.forEach(function(opt, i) {
     var btn       = document.createElement('button');
     btn.className = 'opt-btn';
     btn.innerHTML = '<span class="opt-label">' + labels[i] + '</span>' + opt.text;
-    btn.onclick   = function() { selectAnswer(i, btn, opt.correct, q, shuffled); };
+    btn.onclick   = (function(o, b, sh) {
+      return function() { selectAnswer(b, o.correct, q, sh); };
+    })(opt, btn, shuffled);
     og.appendChild(btn);
   });
 
-  // hide feedback and next button
+  // hide feedback and next
   var fb = document.getElementById('feedbackBox');
   var tb = document.getElementById('tipBox');
-  fb.className    = 'feedback-box';
-  tb.className    = 'feedback-box';
+  fb.className     = 'fb-box';
+  tb.className     = 'fb-box';
   fb.style.display = 'none';
   tb.style.display = 'none';
   document.getElementById('nextBtn').style.display = 'none';
@@ -1074,14 +1057,8 @@ var pct = (currentQ / activeQs2.length) * 100;
     lv.appendChild(chip);
   });
 
-  // start countdown timer
-  startTimer();
-}
-
-// ═══════════════════════════════════════════
-// TIMER
-// ═══════════════════════════════════════════
-function startTimer() {
+  startTimer
+  function startTimer() {
   clearInterval(timerInterval);
   timeLeft = 15;
   var ring = document.getElementById('timerRing');
@@ -1099,39 +1076,42 @@ function startTimer() {
   }, 1000);
 }
 
+// ═══════════════════════════════════════════
+// TIME UP
+// ═══════════════════════════════════════════
 function timeUp() {
   answered = true;
   combo    = 0;
   totalAnswered++;
-  var r    = ROUNDS[currentRound];
-  var q    = r.questions[currentQ];
 
-  var btns = document.querySelectorAll('.opt-btn');
-  btns.forEach(function(btn, i) {
+  var allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(function(btn) {
     btn.disabled = true;
   });
 
-  showFeedback(false, "Time's up! " + q.feedback, q.tip);
+  showFeedback(false, "⏰ Time's up! Try to answer faster next time!", "💡 Read all options carefully before the timer runs out!");
   document.getElementById('nextBtn').style.display = 'inline-block';
 }
 
 // ═══════════════════════════════════════════
 // SELECT ANSWER
 // ═══════════════════════════════════════════
-function selectAnswer(idx, btn, isCorrect, q, shuffled) {
+function selectAnswer(btn, isCorrect, q, shuffled) {
   if (answered) return;
   answered = true;
   clearInterval(timerInterval);
   totalAnswered++;
 
-  // use shuffled options to find and reveal correct button
   var allBtns = document.querySelectorAll('.opt-btn');
   allBtns.forEach(function(b, i) {
     b.disabled = true;
-    if (shuffled[i].correct && i !== idx) b.classList.add('reveal');
+    if (shuffled[i] && shuffled[i].correct) {
+      b.classList.add('reveal');
+    }
   });
 
   if (isCorrect) {
+    btn.classList.remove('reveal');
     btn.classList.add('correct');
     combo++;
     correctCount++;
@@ -1145,13 +1125,13 @@ function selectAnswer(idx, btn, isCorrect, q, shuffled) {
     roundScore += pts;
 
     document.getElementById('scoreDisplay').textContent = totalScore;
-    showScorePopup('+' + pts + (combo >= 3 ? ' COMBO!' : ' '));
-    showFeedback(true, 'Correct! ' + q.feedback, q.tip);
+    showScorePopup('+' + pts + (combo >= 3 ? ' 🔥 COMBO!' : ' ⭐'));
+    showFeedback(true, '✅ ' + q.feedback, q.tip);
 
   } else {
     btn.classList.add('wrong');
     combo = 0;
-    showFeedback(false, 'Not quite! ' + q.feedback, q.tip);
+    showFeedback(false, '❌ Not quite! ' + q.feedback, q.tip);
   }
 
   document.getElementById('nextBtn').style.display = 'inline-block';
@@ -1165,12 +1145,12 @@ function showFeedback(correct, msg, tip) {
   var tb = document.getElementById('tipBox');
 
   fb.textContent   = msg;
-  fb.className     = 'feedback-box show ' + (correct ? 'ok' : 'err');
+  fb.className     = 'fb-box show ' + (correct ? 'ok' : 'err');
   fb.style.display = 'block';
 
   if (tip) {
     tb.textContent   = tip;
-    tb.className     = 'feedback-box show tip';
+    tb.className     = 'fb-box show tip';
     tb.style.display = 'block';
   }
 }
@@ -1179,7 +1159,7 @@ function showFeedback(correct, msg, tip) {
 // SCORE POPUP
 // ═══════════════════════════════════════════
 function showScorePopup(text) {
-  var el       = document.createElement('div');
+  var el         = document.createElement('div');
   el.className   = 'score-popup';
   el.textContent = text;
   document.body.appendChild(el);
@@ -1190,9 +1170,9 @@ function showScorePopup(text) {
 // NEXT QUESTION
 // ═══════════════════════════════════════════
 function nextQuestion() {
-  var r = ROUNDS[currentRound];
+  var r  = ROUNDS[currentRound];
+  var qs = getQuestions(r);
   currentQ++;
-  var qs = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
   if (currentQ < qs.length) {
     loadQuestion();
   } else {
@@ -1206,13 +1186,12 @@ function nextQuestion() {
 function showRoundEnd() {
   clearInterval(timerInterval);
   var r    = ROUNDS[currentRound];
-var qs   = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
-var maxP = qs.length * 150;
+  var qs   = getQuestions(r);
+  var maxP = qs.length * 150;
   var pct  = roundScore / maxP;
 
   roundScores.push(roundScore);
 
-  // icon and stars
   document.getElementById('roundEndIcon').textContent  = pct >= 0.8 ? '🎉' : pct >= 0.5 ? '👍' : '💪';
   document.getElementById('roundEndTitle').textContent = 'Round ' + r.id + ' Complete!';
   document.getElementById('roundEndSub').textContent   = r.title;
@@ -1229,19 +1208,22 @@ var maxP = qs.length * 150;
     : '💪 Good effort! Review the vocabulary and try again!';
   document.getElementById('roundMessage').textContent = msg;
 
-  // show correct phrases from this round
+  // show correct phrases
   var pl = document.getElementById('roundPhraseList');
   pl.innerHTML = '';
-var questions = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
-questions.forEach(function(q) {
-    var correct = q.options.find(function(o) { return o.correct; });
-    var div     = document.createElement('div');
+  qs.forEach(function(q) {
+    var correct = null;
+    for (var i = 0; i < q.options.length; i++) {
+      if (q.options[i].correct) { correct = q.options[i]; break; }
+    }
+    if (!correct) return;
+    var div           = document.createElement('div');
     div.style.cssText = 'background:#fff0f7;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:.87rem;border-left:4px solid var(--pink);';
-    div.innerHTML     = '<span style="font-size:.75rem;color:var(--pink);font-weight:700;display:block;margin-bottom:3px;">' + q.scene + '</span>' + correct.text;
+    div.innerHTML     = '<span style="font-size:.75rem;color:var(--pink);font-weight:700;display:block;margin-bottom:3px;">'
+                      + q.scene + '</span>' + correct.text;
     pl.appendChild(div);
   });
 
-  // next round or finish button label
   var nb = document.getElementById('nextRoundBtn');
   nb.textContent = currentRound < ROUNDS.length - 1 ? 'Next Round ➡️' : 'See Final Results 🏆';
 
@@ -1267,14 +1249,13 @@ function nextRound() {
 // ═══════════════════════════════════════════
 function showFinalResults() {
   var totalPossible = ROUNDS.reduce(function(a, r) {
-    return a + r.questions.length * 150;
+    return a + getQuestions(r).length * 150;
   }, 0);
   var pct = totalScore / totalPossible;
 
   document.getElementById('finalNameLine').textContent = 'Well done, ' + playerName + '! 🎉';
   document.getElementById('finalScore').textContent    = totalScore;
 
-  // stars
   var stars = pct >= 0.85 ? '⭐⭐⭐⭐⭐'
             : pct >= 0.70 ? '⭐⭐⭐⭐'
             : pct >= 0.50 ? '⭐⭐⭐'
@@ -1282,13 +1263,12 @@ function showFinalResults() {
             : '⭐';
   document.getElementById('finalStars').textContent = stars;
 
-  // badge and message
   var badgeIcon, badgeTitle, badgeDesc, finalMsg;
   if (pct >= 0.85) {
     badgeIcon  = '💎';
     badgeTitle = 'Diamond Nail Speaker!';
     badgeDesc  = 'You speak English at a nail salon like a true American!';
-    finalMsg   = 'Outstanding, ' + playerName + '! Your English is natural, fluent and confident. You are ready to visit any nail salon in the US!';
+    finalMsg   = 'Outstanding, ' + playerName + '! Your English is natural, fluent and confident. You are ready for any US nail salon!';
   } else if (pct >= 0.70) {
     badgeIcon  = '🥇';
     badgeTitle = 'Gold Nail Speaker!';
@@ -1303,28 +1283,30 @@ function showFinalResults() {
     badgeIcon  = '🌸';
     badgeTitle = 'Nail Salon Learner!';
     badgeDesc  = 'You are on your way — keep going!';
-    finalMsg   = 'Keep practicing, ' + playerName + '! Every expert was once a beginner. Study the vocabulary and try again — you can do it!';
+    finalMsg   = 'Keep practicing, ' + playerName + '! Every expert was once a beginner. Study the vocab and try again!';
   }
 
-  document.getElementById('badgeIcon').textContent  = badgeIcon;
-  document.getElementById('badgeTitle').textContent = badgeTitle;
-  document.getElementById('badgeDesc').textContent  = badgeDesc;
+  document.getElementById('badgeIcon').textContent    = badgeIcon;
+  document.getElementById('badgeTitle').textContent   = badgeTitle;
+  document.getElementById('badgeDesc').textContent    = badgeDesc;
   document.getElementById('finalMessage').textContent = finalMsg;
 
-  // performance stats
+  // stats
   var sl       = document.getElementById('statsList');
   sl.innerHTML = '';
   var accuracy = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
   var stats    = [
-    { label:'Total Score',     value: totalScore + ' pts',             color:'var(--pink-dk)' },
-    { label:'Accuracy',        value: accuracy + '%',                  color:'var(--teal)'    },
-    { label:'Correct Answers', value: correctCount + '/' + totalAnswered, color:'var(--purple)'  },
-    { label:'Rounds Completed',value: ROUNDS.length,                   color:'var(--gold-dk)' }
+    { label:'Total Score',      value: totalScore + ' pts',                color:'var(--pink-dk)' },
+    { label:'Accuracy',         value: accuracy + '%',                     color:'var(--teal)'    },
+    { label:'Correct Answers',  value: correctCount + '/' + totalAnswered, color:'var(--purple)'  },
+    { label:'Role Played',      value: playerRole === 'customer' ? '💁 Customer' : '💅 Nail Tech', color:'var(--gold-dk)' },
+    { label:'Rounds Completed', value: ROUNDS.length + ' rounds',          color:'var(--pink-dk)' }
   ];
   stats.forEach(function(s) {
-    var row       = document.createElement('div');
+    var row           = document.createElement('div');
     row.style.cssText = 'display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #f0c0d5;font-size:.9rem;';
-    row.innerHTML = '<span style="color:#666;">' + s.label + '</span><span style="font-weight:800;color:' + s.color + ';">' + s.value + '</span>';
+    row.innerHTML     = '<span style="color:#666;">' + s.label + '</span>'
+                      + '<span style="font-weight:800;color:' + s.color + ';">' + s.value + '</span>';
     sl.appendChild(row);
   });
 
@@ -1356,10 +1338,10 @@ function showVocabStudy() {
   container.innerHTML = '';
 
   ROUNDS.forEach(function(r) {
-    // round header
-    var header       = document.createElement('div');
+    var header           = document.createElement('div');
     header.style.cssText = 'display:flex;align-items:center;gap:10px;margin:20px 0 12px;';
-    header.innerHTML = '<span style="font-size:1.6rem;">' + r.icon + '</span><h3 style="color:var(--pink-dk);">Round ' + r.id + ': ' + r.title + '</h3>';
+    header.innerHTML     = '<span style="font-size:1.6rem;">' + r.icon + '</span>'
+                         + '<h3 style="color:var(--pink-dk);">Round ' + r.id + ': ' + r.title + '</h3>';
     container.appendChild(header);
 
     r.vocab.forEach(function(word) {
@@ -1406,14 +1388,14 @@ function launchConfetti() {
   var particles = [];
   for (var i = 0; i < 120; i++) {
     particles.push({
-      x:          Math.random() * canvas.width,
-      y:          Math.random() * canvas.height - canvas.height,
-      r:          Math.random() * 8 + 4,
-      d:          Math.random() * 3 + 1,
-      color:      colors[Math.floor(Math.random() * colors.length)],
-      tilt:       Math.random() * 10 - 10,
-      tiltAngle:  0,
-      tiltSpeed:  Math.random() * 0.1 + 0.05
+      x:         Math.random() * canvas.width,
+      y:         Math.random() * canvas.height - canvas.height,
+      r:         Math.random() * 8 + 4,
+      d:         Math.random() * 3 + 1,
+      color:     colors[Math.floor(Math.random() * colors.length)],
+      tilt:      Math.random() * 10 - 10,
+      tiltAngle: 0,
+      tiltSpeed: Math.random() * 0.1 + 0.05
     });
   }
 
