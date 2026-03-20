@@ -977,7 +977,10 @@ var q = playerRole === 'customer'
   // top bar
   document.getElementById('scoreDisplay').textContent = totalScore;
   document.getElementById('roleBadge').textContent    = playerRole === 'customer' ? '💁 Customer' : '💅 Nail Tech';
-  document.getElementById('qCounter').textContent     = 'Q ' + (currentQ + 1) + '/' + r.questions.length;
+  
+var activeQs = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
+document.getElementById('qCounter').textContent
+  = 'Q ' + (currentQ + 1) + '/' + activeQs.length;
 
   // scene header
   document.getElementById('sceneName').textContent    = q.scene;
@@ -985,7 +988,8 @@ var q = playerRole === 'customer'
   document.getElementById('sceneTitle').textContent   = q.title;
 
   // progress bar
-  var pct = (currentQ / r.questions.length) * 100;
+var activeQs2 = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
+var pct = (currentQ / activeQs2.length) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
 
   // nail bar — shows which round you're on
@@ -1188,8 +1192,8 @@ function showScorePopup(text) {
 function nextQuestion() {
   var r = ROUNDS[currentRound];
   currentQ++;
-var questions = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
-if (currentQ < questions.length) {
+  var qs = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
+  if (currentQ < qs.length) {
     loadQuestion();
   } else {
     showRoundEnd();
@@ -1202,7 +1206,8 @@ if (currentQ < questions.length) {
 function showRoundEnd() {
   clearInterval(timerInterval);
   var r    = ROUNDS[currentRound];
-  var maxP = r.questions.length * 150;
+var qs   = playerRole === 'customer' ? r.customerQuestions : r.techQuestions;
+var maxP = qs.length * 150;
   var pct  = roundScore / maxP;
 
   roundScores.push(roundScore);
